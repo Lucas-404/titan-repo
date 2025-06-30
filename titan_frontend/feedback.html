@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💬 Feedback - Titan AI</title>
+    <link rel="stylesheet" href="/static/feedback.css">
+</head>
+
+<body>
+
+    <script>
+        const API_BASE_URL = 'https://api.outzapp.com';
+
+        function fetchAPI(endpoint, options = {}) {
+            const url = `${API_BASE_URL}${endpoint}`;
+            return fetch(url, {
+                ...options,
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...options.headers
+                }
+            });
+        }
+    </script>
+
+    <!-- Link para voltar ao Titan -->
+    <a href="/" class="back-link">← Voltar ao Titan</a>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>💬 Sistema de Feedback</h1>
+            <p>Ajude-nos a melhorar o Titan reportando bugs, problemas ou dando sugestões</p>
+        </div>
+
+        <!-- Cards de Tipos de Feedback -->
+        <div class="feedback-types">
+            <div class="feedback-card bug-card" onclick="openFeedbackModal('bug')">
+                <div class="card-icon">🐛</div>
+                <div class="card-title">Reportar Bug</div>
+                <div class="card-description">
+                    Algo não está funcionando como deveria? Reporte aqui para corrigirmos rapidamente.
+                </div>
+            </div>
+
+            <div class="feedback-card suggestion-card" onclick="openFeedbackModal('melhoria')">
+                <div class="card-icon">💡</div>
+                <div class="card-title">Sugestão de Melhoria</div>
+                <div class="card-description">
+                    Tem uma ideia para tornar o Titan ainda melhor? Compartilhe conosco!
+                </div>
+            </div>
+
+            <div class="feedback-card problem-card" onclick="openFeedbackModal('problema')">
+                <div class="card-icon">⚠️</div>
+                <div class="card-title">Problema de Uso</div>
+                <div class="card-description">
+                    Dificuldade para usar alguma funcionalidade? Vamos te ajudar a resolver.
+                </div>
+            </div>
+
+            <div class="feedback-card response-card" onclick="openFeedbackModal('resposta')">
+                <div class="card-icon">🤖</div>
+                <div class="card-title">Resposta Incorreta</div>
+                <div class="card-description">
+                    O Titan deu uma informação errada? Reporte para melhorarmos as respostas.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Feedback -->
+    <div class="modal" id="feedbackModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-icon" id="modalIcon">📝</div>
+                <h2 class="modal-title" id="modalTitle">Enviar Feedback</h2>
+                <button class="close-btn" onclick="closeFeedbackModal()">×</button>
+            </div>
+
+            <div class="modal-body" id="modalBody">
+                <form id="feedbackForm">
+                    <!-- Tipo será definido automaticamente -->
+                    <input type="hidden" id="feedbackType" name="tipo">
+
+                    <div class="form-group">
+                        <label for="feedbackTitle" class="required">Título do problema/sugestão</label>
+                        <input type="text" id="feedbackTitle" name="titulo"
+                            placeholder="Ex: Titan não responde perguntas sobre matemática" maxlength="100" required>
+                        <div class="field-hint">Seja específico e claro sobre o problema</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="feedbackCategory">Categoria</label>
+                        <select id="feedbackCategory" name="categoria">
+                            <option value="geral">Geral</option>
+                            <option value="interface">Interface / Design</option>
+                            <option value="performance">Performance / Velocidade</option>
+                            <option value="respostas">Qualidade das Respostas</option>
+                            <option value="thinking">Modo Raciocínio</option>
+                            <option value="historico">Histórico / Salvamento</option>
+                            <option value="ferramentas">Ferramentas</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="feedbackPriority">Prioridade</label>
+                        <select id="feedbackPriority" name="prioridade">
+                            <option value="baixa">Baixa - Sugestão</option>
+                            <option value="media" selected>Média - Problema normal</option>
+                            <option value="alta">Alta - Impede uso</option>
+                            <option value="critica">Crítica - Sistema quebrado</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="feedbackDescription" class="required">Descrição completa</label>
+                        <textarea id="feedbackDescription" name="descricao"
+                            placeholder="Explique detalhadamente o que aconteceu, quando acontece, e qual o impacto..."
+                            rows="4" maxlength="1000" required></textarea>
+                        <div class="char-counter">
+                            <span id="descriptionCount">0</span>/1000 caracteres
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="feedbackSteps">Como reproduzir o problema? (opcional)</label>
+                        <textarea id="feedbackSteps" name="passos_reproducao"
+                            placeholder="1. Fiz isso...&#10;2. Cliquei aqui...&#10;3. Esperava que..." rows="3"
+                            maxlength="500"></textarea>
+                        <div class="field-hint">Passos para reproduzir ajudam muito a corrigir o problema!</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="feedbackExpected">O que você esperava que acontecesse? (opcional)</label>
+                        <textarea id="feedbackExpected" name="comportamento_esperado"
+                            placeholder="Esperava que o Titan..." rows="2" maxlength="300"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="feedbackActual">O que realmente aconteceu? (opcional)</label>
+                        <textarea id="feedbackActual" name="resultado_atual" placeholder="Mas na verdade..." rows="2"
+                            maxlength="300"></textarea>
+                    </div>
+
+                    <div class="system-info">
+                        <h4>📊 Informações do sistema (coletadas automaticamente)</h4>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <strong>Navegador:</strong> <span id="browserInfo">-</span>
+                            </div>
+                            <div class="info-item">
+                                <strong>Sistema:</strong> <span id="systemInfo">-</span>
+                            </div>
+                            <div class="info-item">
+                                <strong>Resolução:</strong> <span id="screenInfo">-</span>
+                            </div>
+                            <div class="info-item">
+                                <strong>Horário:</strong> <span id="timeInfo">-</span>
+                            </div>
+                        </div>
+                        <div class="field-hint">Essas informações nos ajudam a investigar e corrigir o problema</div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeFeedbackModal()">
+                    Cancelar
+                </button>
+                <button class="btn btn-primary" onclick="submitFeedback()" id="submitBtn">
+                    <span class="btn-icon">📤</span>
+                    Enviar Feedback
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/static/feedback.js"></script>
+</body>
+
+</html>

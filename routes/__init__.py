@@ -1,0 +1,3 @@
+"""
+Rotas do Titan Chat
+"""

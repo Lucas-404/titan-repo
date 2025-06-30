@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 Titan Analytics</title>
+    <link rel="stylesheet" href="/static/analytics.css">
+</head>
+<body>
+    <div class="analytics-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📊 Titan Analytics</h1>
+            <div class="last-update">
+                Última atualização: <span id="last-update">carregando...</span>
+            </div>
+        </div>
+
+        <!-- Loading Screen -->
+        <div id="loading" class="loading">
+            🔄 Carregando dados...
+        </div>
+
+        <!-- Main Content -->
+        <div id="main-content" style="display: none;">
+            
+            <!-- Status Indicators -->
+            <div class="status-indicators" id="status-indicators">
+                <!-- Preenchido via JS -->
+            </div>
+
+            <!-- Main Metrics -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <span class="metric-icon">👥</span>
+                    <div class="metric-value" id="usuarios-ativos">0</div>
+                    <div class="metric-label">Usuários Ativos</div>
+                    <div class="metric-trend">+<span id="usuarios-hoje">0</span> hoje</div>
+                </div>
+
+                <div class="metric-card">
+                    <span class="metric-icon">😊</span>
+                    <div class="metric-value"><span id="aprovacao">0</span>%</div>
+                    <div class="metric-label">Taxa de Aprovação</div>
+                    <div class="metric-trend"><span id="likes">0</span>👍 <span id="dislikes">0</span>👎</div>
+                </div>
+
+                <div class="metric-card">
+                    <span class="metric-icon">⚡</span>
+                    <div class="metric-value"><span id="uptime">0</span>h</div>
+                    <div class="metric-label">Uptime</div>
+                    <div class="metric-trend"><span id="total-requests">0</span> requests</div>
+                </div>
+
+                <div class="metric-card">
+                    <span class="metric-icon">🧠</span>
+                    <div class="metric-value" id="total-memorias">0</div>
+                    <div class="metric-label">Memórias Salvas</div>
+                    <div class="metric-trend"><span id="cache-efficiency">0</span>% cache hit</div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="charts-section">
+                <!-- Activity Chart -->
+                <div class="chart-card">
+                    <div class="chart-title">📈 Atividade por Hora (24h)</div>
+                    <div class="activity-chart" id="activity-chart">
+                        <!-- Preenchido via JS -->
+                    </div>
+                </div>
+
+                <!-- Categories Chart -->
+                <div class="chart-card">
+                    <div class="chart-title">📋 Categorias Mais Usadas</div>
+                    <ul class="categories-list" id="categories-list">
+                        <!-- Preenchido via JS -->
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Problems Section -->
+            <div class="problems-section" id="problems-section" style="display: none;">
+                <h3>⚠️ Mensagens com Feedback Negativo</h3>
+                <div id="problems-list">
+                    <!-- Preenchido via JS -->
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Error Message -->
+        <div id="error-message" class="error-message" style="display: none;">
+            <h3>❌ Erro ao carregar dados</h3>
+            <p id="error-text"></p>
+        </div>
+    </div>
+
+    <!-- Refresh Button -->
+    <button class="refresh-btn" onclick="refreshData()" id="refresh-btn" title="Atualizar dados">
+        🔄
+    </button>
+
+    <!-- DADOS VINDOS DO SERVIDOR (SEM JINJA2 NO JS) -->
+    <div id="analytics-data" style="display: none;">{{ analytics_json|safe }}</div>
+
+    <!-- JavaScript separado -->
+    <script src="/static/analytics.js"></script>
+</body>
+</html>

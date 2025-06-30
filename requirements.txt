@@ -1,0 +1,9 @@
+Flask
+Flask-WTF
+Flask-Limiter
+Flask-Talisman
+Flask-Cors
+requests
+stripe
+yt-dlp
+python-dotenv
